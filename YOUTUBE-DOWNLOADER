@@ -1,0 +1,28 @@
+from pytube import YouTube
+import tkinter as tk
+from tkinter import filedialog
+
+def download_video(url, save_path):
+    try:
+        yt = YouTube(url)  # Fixed YouTube call
+        streams = yt.streams.filter(progressive=True, file_extension="mp4")
+        highest_res_stream = streams.get_highest_resolution()  # Fixed method name
+        highest_res_stream.download(output_path=save_path)
+        print("Video downloaded successfully!")
+    except Exception as e:  # Fixed Exception handling
+        print(f"Error: {e}")
+
+# Function to browse and select folder for download
+def browse_folder():
+    folder_path = filedialog.askdirectory()
+    return folder_path
+
+# Example usage
+url = "https://youtu.be/NpmFbWO6HPU?si=FaoAqJ9cCnVGUIUy"
+
+# Use tkinter to create a simple UI for folder selection
+root = tk.Tk()
+root.withdraw()  # Hide the root window
+save_path = browse_folder()  # Prompt the user to select a folder
+
+download_video(url, save_path)
