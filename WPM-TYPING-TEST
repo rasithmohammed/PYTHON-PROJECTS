@@ -1,0 +1,43 @@
+import time
+
+def wpm_test():
+    # Sample text for typing test
+    test_text = """
+    The quick brown fox jumps over the lazy dog. This sentence contains every letter of the alphabet.
+    Practice typing to improve your speed and accuracy.
+    """
+    print("Typing Test Starting Now...")
+    print("\nType the following text:\n")
+    print(test_text)
+    
+    # Wait for user to start typing
+    input("\nPress Enter when you are ready to start...\n")
+
+    start_time = time.time()  # Start time
+    
+    # Capture the user's input
+    user_input = input("\nStart typing here:\n")
+    
+    end_time = time.time()  # End time
+    
+    # Calculate elapsed time in minutes
+    elapsed_time = (end_time - start_time) / 60
+    
+    # Calculate words typed by counting spaces (approximation)
+    words_typed = len(user_input.split())
+    
+    # Calculate WPM
+    wpm = words_typed / elapsed_time
+    
+    # Display results
+    print(f"\nTime taken: {elapsed_time * 60:.2f} seconds")
+    print(f"Words typed: {words_typed}")
+    print(f"Your WPM: {wpm:.2f}")
+    
+    # Accuracy check
+    correct_words = sum(1 for u, t in zip(user_input.split(), test_text.split()) if u == t)
+    accuracy = (correct_words / len(test_text.split())) * 100
+    print(f"Your accuracy: {accuracy:.2f}%")
+
+# Run the typing test
+wpm_test()
