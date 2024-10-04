@@ -1,0 +1,97 @@
+import pygame
+import random
+import time
+
+# Initialize Pygame
+pygame.init()
+
+# Set screen dimensions
+WIDTH, HEIGHT = 800, 600
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Aim Trainer")
+
+# Colors
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+BLACK = (0, 0, 0)
+
+# Font for score display
+font = pygame.font.SysFont(None, 36)
+
+# Target properties
+TARGET_RADIUS = 30
+TARGET_COLOR = RED
+
+# Game settings
+TARGETS_TO_HIT = 10
+TIME_LIMIT = 30  # seconds
+
+# Clock to control frame rate
+clock = pygame.time.Clock()
+
+# Function to display text on the screen
+def draw_text(text, font, color, x, y):
+    img = font.render(text, True, color)
+    screen.blit(img, (x, y))
+
+# Function to create a random target position
+def generate_target():
+    x = random.randint(TARGET_RADIUS, WIDTH - TARGET_RADIUS)
+    y = random.randint(TARGET_RADIUS, HEIGHT - TARGET_RADIUS)
+    return (x, y)
+
+def main():
+    # Main variables
+    targets_hit = 0
+    start_time = time.time()
+    target_position = generate_target()
+    game_over = False
+
+    # Main game loop
+    while not game_over:
+        screen.fill(WHITE)
+        elapsed_time = time.time() - start_time
+
+        # Check if time has run out
+        if elapsed_time > TIME_LIMIT:
+            game_over = True
+
+        # Handle events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left click
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                distance = ((mouse_x - target_position[0])**2 + (mouse_y - target_position[1])**2)**0.5
+
+                if distance <= TARGET_RADIUS:
+                    targets_hit += 1
+                    target_position = generate_target()
+
+                    if targets_hit >= TARGETS_TO_HIT:
+                        game_over = True
+
+        # Draw the target
+        pygame.draw.circle(screen, TARGET_COLOR, target_position, TARGET_RADIUS)
+
+        # Display the score and time remaining
+        draw_text(f"Targets Hit: {targets_hit}/{TARGETS_TO_HIT}", font, BLACK, 10, 10)
+        draw_text(f"Time Remaining: {int(TIME_LIMIT - elapsed_time)}", font, BLACK, 10, 50)
+
+        # Update the display
+        pygame.display.flip()
+
+        # Cap the frame rate
+        clock.tick(60)
+
+    # End game screen
+    screen.fill(WHITE)
+    draw_text("Game Over!", font, BLACK, WIDTH // 2 - 80, HEIGHT // 2 - 30)
+    draw_text(f"Final Score: {targets_hit}/{TARGETS_TO_HIT}", font, BLACK, WIDTH // 2 - 100, HEIGHT // 2 + 10)
+    pygame.display.flip()
+    pygame.time.wait(3000)  # Wait for 3 seconds before quitting
+
+if __name__ == "__main__":
+    main()
+    pygame.quit()
