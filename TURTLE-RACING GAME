@@ -1,0 +1,69 @@
+import turtle
+import random
+
+# Set up the screen
+screen = turtle.Screen()
+screen.title("Turtle Racing Game")
+screen.bgcolor("lightgreen")
+
+# User Input for Race Setup
+num_turtles = int(input("Enter the number of turtles (2-6): "))
+if num_turtles < 2 or num_turtles > 6:
+    print("Please enter a number between 2 and 6.")
+    num_turtles = int(input("Enter the number of turtles (2-6): "))
+
+# User Input for Custom Turtle Names
+turtle_names = []
+for i in range(num_turtles):
+    name = input(f"Enter a name for turtle {i+1}: ")
+    turtle_names.append(name)
+
+# User Input for Race Distance
+race_distance = int(input("Enter the race distance (e.g., 200-500): "))
+
+# Create the finish line
+finish_line = race_distance
+
+# Colors for turtles
+colors = ["red", "blue", "green", "orange", "purple", "yellow"]
+
+# Create turtles with different colors
+turtles = []
+start_y_positions = list(range(-100, 101, 40))[:num_turtles]  # Adjust start positions based on number of turtles
+
+for i in range(num_turtles):
+    racer = turtle.Turtle()
+    racer.shape("turtle")
+    racer.color(colors[i])
+    racer.penup()
+    racer.goto(-300, start_y_positions[i])  # Starting line
+    turtles.append(racer)
+
+# Draw the finish line
+line = turtle.Turtle()
+line.penup()
+line.goto(finish_line, -150)
+line.pendown()
+line.left(90)
+line.forward(300)
+line.hideturtle()
+
+# Function to move turtles randomly
+def race():
+    winner = None
+    while not winner:
+        for racer in turtles:
+            move_distance = random.randint(1, 10)
+            racer.forward(move_distance)
+            if racer.xcor() >= finish_line:  # Check if turtle reached the finish line
+                winner = racer
+                winner.color("gold")  # Winner turns gold
+                winner_index = turtles.index(winner)
+                print(f"The winner is {turtle_names[winner_index]} ({winner.pencolor()} turtle)!")
+                break
+
+# Start the race
+race()
+
+# Keep the window open until clicked
+screen.exitonclick()
